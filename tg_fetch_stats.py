@@ -101,7 +101,7 @@ def process_data(json_stats, channel_id, username):
     views_total_count = 0
     forwards_total_count = 0
     reactions_total_count = {}
-    last_publication_date = json_stats[9].get('date').strftime("%Y-%m-%d")
+    last_publication_date = json_stats[-1].get('date').strftime("%Y-%m-%d")
     for index in range(len(json_stats)):
         if json_stats[index].get('views'):
             views_total_count += int(json_stats[index].get('views'))

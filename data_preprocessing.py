@@ -39,7 +39,7 @@ def text_to_word_list(text):
     return ' '.join(text_without_stopwords)
 
 
-for filename in ['1064580781.json', '1499894140.json']:
+for filename in constants.PRORUSSIAN_CHANNELS:
     f = os.path.join(directory, filename)
     # checking if it is a file
     if os.path.isfile(f):
@@ -55,9 +55,9 @@ for filename in ['1064580781.json', '1499894140.json']:
                 labeled_data[text] = label
                 stats[text] = [data[index].get('views'), data[index].get('forwards'), data[index]['reactions']]
 
-with open("labeled_data_small.json", "w", encoding="utf-8") as outfile:
-    json.dump(labeled_data, outfile, ensure_ascii=False)
-
-
-with open("stats_small.json", "w", encoding="utf-8") as outfile:
-    json.dump(stats, outfile, ensure_ascii=False)
+# with open("labeled_data_small.json", "w", encoding="utf-8") as outfile:
+#     json.dump(labeled_data, outfile, ensure_ascii=False)
+#
+#
+# with open("stats_small.json", "w", encoding="utf-8") as outfile:
+#     json.dump(stats, outfile, ensure_ascii=False)
