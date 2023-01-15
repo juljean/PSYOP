@@ -22,7 +22,7 @@ def predict(sentenses):
     values = get_sentence_embeding(sentenses)
     predicted_values = model(values)
     coef = float(sum(predicted_values)/len(sentenses)*2-1)
-    return max(min(coef,1),-1)
+    return max(min(coef,1),0)
 
 
 
