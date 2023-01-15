@@ -7,6 +7,7 @@ import tg_fetch_posts
 import data_preprocessing
 import pandas as pd
 import db_connection
+import tg_fetch_stats
 
 model = models.load_model(constants.MODEL_NAME)
 
@@ -46,7 +47,8 @@ def get_indexes(channel_link, total_count_limit=500):
         df_channel = pd.DataFrame.from_dict({'id_channel': [channel_id], 'channel_name': [username]})
         db_connection.connect(df_channel, "Channel")
         db_connection.connect(df_stats, "ProrussianCoefficient")
+        tg_fetch_stats.insert_stats(channel_link)
     else:
         get_indexes(channel_link, total_count_limit=total_count_limit + 100)
 
-# get_indexes('https://t.me/truexanewsua')
+get_indexes('https://t.me/truexanewsua')
