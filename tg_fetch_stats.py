@@ -4,7 +4,6 @@ import asyncio
 from datetime import date, datetime
 import config
 import constants
-from telethon import TelegramClient
 from telethon.errors import SessionPasswordNeededError
 from telethon.tl.functions.messages import (GetHistoryRequest)
 from telethon.tl.types import (PeerChannel)
@@ -28,30 +27,20 @@ class DateTimeEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, o)
 
 
-# Setting configuration values
-api_id = config.API_ID
-api_hash = config.API_HASH
-phone = config.PHONE
-username = config.USERNAME
-# Create the client and connect
-client = TelegramClient(username, api_id, api_hash)
-
-
 async def fetch_stats(channel_link):
     """
     Request TG API and get stats by channel_id
     :param channel_link: str
     :return: json with stats
     """
-    await client.start()
     print("Client Created")
     # Ensure you're authorized
-    if not await client.is_user_authorized():
-        await client.send_code_request(phone)
+    if not await constants.client.is_user_authorized():
+        await constants.client.send_code_request(constants.phone)
         try:
-            await client.sign_in(phone, input('Enter the code: '))
+            await constants.client.sign_in(constants.phone, input('Enter the code: '))
         except SessionPasswordNeededError:
-            await client.sign_in(password=input('Password: '))
+            await constants.client.sign_in(password=input('Password: '))
 
     # user_input_channel = input('enter entity(telegram URL or entity id):')
     user_input_channel = channel_link
@@ -60,7 +49,7 @@ async def fetch_stats(channel_link):
     else:
         entity = user_input_channel
 
-    my_channel = await client.get_entity(entity)
+    my_channel = await constants.client.get_entity(entity)
 
     offset_id = 0
     limit = 100
@@ -69,7 +58,7 @@ async def fetch_stats(channel_link):
     total_count_limit = 10
 
     while True:
-        history = await client(GetHistoryRequest(
+        history = await constants.client(GetHistoryRequest(
             peer=my_channel,
             offset_id=offset_id,
             offset_date=None,
@@ -121,8 +110,8 @@ def process_data(json_stats, channel_id, username):
 
 
 def insert_stats(channel_link):
-    with client:
+    with constants.client:
         # To insert channels data swap constants.PROUKRAINIAN_CHANNELS/constants.PRORUSSIAN_CHANNELS
         # for channel_link in constants.PROUKRAINIAN_CHANNELS:
-        stats, channel_id, username = client.loop.run_until_complete(fetch_stats(channel_link))
+        stats, channel_id, username = constants.client.loop.run_until_complete(fetch_stats(channel_link))
         process_data(stats, channel_id, username)

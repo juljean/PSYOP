@@ -51,6 +51,6 @@ def get_indexes(channel_link, total_count_limit=300):
     else:
         get_indexes(channel_link, total_count_limit=total_count_limit + 500)
 
-for link in constants.VAGUE_CHANNELS:
-    get_indexes(link)
-    print(link)
+# for link in constants.VAGUE_CHANNELS:
+#     get_indexes(link)
+#     print(link)

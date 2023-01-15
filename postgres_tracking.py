@@ -11,10 +11,10 @@ def query_handler():
         # data format [('https://t.me/dvachannel', 0)]
         for item in fetched_data:
             index_prediction.get_indexes(item[0])
-            db_connection.connect(channel_link=item[0], operation_name="delete")
+            db_connection.connect(channel_link=item[0], operation_name="delete" )
     else:
         time.sleep(60)
-        query_handler()
+    query_handler()
 
 
 query_handler()

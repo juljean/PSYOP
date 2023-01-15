@@ -1,3 +1,6 @@
+import config
+from telethon import TelegramClient
+
 PRORUSSIAN_CHANNELS = ['https://t.me/denazi_UA',
 'https://t.me/vityzeva',
 'https://t.me/otryadkovpaka',
@@ -142,3 +145,11 @@ QUERY_DELETE_QUEUE_ENTITIES= """
 DELETE FROM analysisqueue WHERE channel_link = %s;
 """
 ALL_CHANNELS = VAGUE_CHANNELS + PROUKRAINIAN_CHANNELS + PRORUSSIAN_CHANNELS + UKRAINIAN_CHANNELS
+
+# Setting configuration values
+api_id = config.API_ID
+api_hash = config.API_HASH
+phone = config.PHONE
+username = config.USERNAME
+# Create the client and connect
+client = TelegramClient(username, api_id, api_hash)
