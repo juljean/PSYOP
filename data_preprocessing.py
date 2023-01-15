@@ -39,6 +39,41 @@ def text_to_word_list(text):
     return ' '.join(text_without_stopwords)
 
 
+def text_to_word_for_model(text):
+    """
+    Preprocessing steps:
+    - Lowercase text
+    - Drop numbers
+    - Verbalize emojis
+    - Verbalize '+'
+    - Drop words with length<2
+    :param text:
+    :return:
+    """
+    text = str(text)
+    text = text.lower()
+    # Clean the text
+    text = sub(r"[^Яа-яЁё^_+]", " ", text)
+    text = sub(r"\+", " плюс ", text)
+    text = sub(r"\s{2,}", " ", text)
+    text = text.split()
+    text_without_stopwords = []
+    sentence_list = []
+    cnt = 0
+    for word in text:
+        # word = stemmer.stemWord(word)
+        if word not in constants.STOP_WORDS_RU:
+            sentence_list.append(word)
+            cnt += 1
+            if cnt >= 10:
+                text_without_stopwords.append(' '.join(sentence_list))
+                cnt = 0
+                sentence_list = []
+    if sentence_list:
+        text_without_stopwords.append(' '.join(sentence_list))
+    return text_without_stopwords
+
+
 for filename in constants.PRORUSSIAN_CHANNELS:
     f = os.path.join(directory, filename)
     # checking if it is a file
