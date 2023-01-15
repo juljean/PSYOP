@@ -26,8 +26,13 @@ for channel_link in constants.PROUKRAINIAN_CHANNELS:
     for index in range(len(data)):
         last_publication_date = data[index].get('date')
         text = data_preprocessing.text_to_word_list(data[index].get('message'))
-        print(predict(sentenses=text), channel_id)
+        pro_rus_index = predict(sentenses=text)
+        print(pro_rus_index, channel_id)
 
         # create df from id, username indendical to fetch_stats one
-        #create df from id, index, text with the columns as postgres columns names
-        #db_connection.connect(df_stats, "ChannelStatistics") but for channels and for index with the second arg of connect() as table name
+        # create df from id, index, text with the columns as postgres columns names
+        # db_connection.connect(df_stats, "ChannelStatistics") but for channels and for index with the second arg of connect() as table name
+
+        stats_to_push = {'id_channel': [channel_id], 'pro_rus_index': [pro_rus_index]}
+        df_index = pd.DataFrame.from_dict(stats_to_push)
+        db_connection.connect(df_index, "Channel")
