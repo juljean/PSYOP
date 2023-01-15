@@ -5,6 +5,8 @@ import json
 import constants
 import tg_fetch_posts
 import data_preprocessing
+import pandas as pd
+import db_connection
 
 model = models.load_model(constants.MODEL_NAME)
 
@@ -21,13 +23,21 @@ def predict(sentenses):
     return float(sum(predicted_values)/len(sentenses)*2-1)
 
 
-for channel_link in constants.PROUKRAINIAN_CHANNELS:
-    data, channel_id = tg_fetch_posts.get_posts(channel_link)
+def get_indexes():
+    channel_link = 'https://t.me/stremPunisher'
+    data, channel_id, username = tg_fetch_posts.get_posts(channel_link)
+    last_publication_date = data[-1].get('date')
+    coefficient = 0
+    # create smart coefficient
     for index in range(len(data)):
-        last_publication_date = data[index].get('date')
         text = data_preprocessing.text_to_word_list(data[index].get('message'))
-        print(predict(sentenses=text), channel_id)
+        coefficient = predict(sentenses=text)
+    data_to_push = {'calculated_coefficient': [coefficient], 'id_channel': [channel_id],
+                     'last_publication_date': [last_publication_date]}
 
-        # create df from id, username indendical to fetch_stats one
-        #create df from id, index, text with the columns as postgres columns names
-        #db_connection.connect(df_stats, "ChannelStatistics") but for channels and for index with the second arg of connect() as table name
+    df_stats = pd.DataFrame.from_dict(data_to_push)
+    df_channel = pd.DataFrame.from_dict({'id_channel': [channel_id], 'channel_name': [username]})
+    # db_connection.connect(df_channel, "Channel")
+    # db_connection.connect(df_stats, "ProrussianCoefficient")
+
+get_indexes()

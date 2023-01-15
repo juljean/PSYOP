@@ -81,10 +81,10 @@ async def fetch_posts(channels_link):
         total_messages = len(all_messages)
         if total_count_limit != 0 and total_messages >= total_count_limit:
             break
-    return all_messages, my_channel.id
+    return all_messages, my_channel.id, my_channel.username
 
 
-def get_posts(channels_link):
+def get_posts(channel_link):
     with client:
-        posts, channel_id = client.loop.run_until_complete(fetch_posts(channels_link))
-        return posts, channel_id
+        posts, channel_id, username = client.loop.run_until_complete(fetch_posts(channel_link))
+        return posts, channel_id, username

@@ -118,12 +118,12 @@ def process_data(json_stats, channel_id, username):
     stats_to_push = {'id_channel': [channel_id], 'views_total_count': [views_total_count], 'forwards_total_count': [forwards_total_count], 'reactions_total_count': [json.dumps(reactions_total_count)], 'last_publication_date': [last_publication_date]}
     df_stats = pd.DataFrame.from_dict(stats_to_push)
     df_channel = pd.DataFrame.from_dict({'id_channel': [channel_id], 'channel_name': [username]})
-    db_connection.connect(df_channel, "Channel")
-    db_connection.connect(df_stats, "ChannelStatistics")
+    # db_connection.connect(df_channel, "Channel")
+    # db_connection.connect(df_stats, "ChannelStatistics")
 
 
 with client:
     # To insert channels data swap constants.PROUKRAINIAN_CHANNELS/constants.PRORUSSIAN_CHANNELS
-    for channel_link in constants.PROUKRAINIAN_CHANNELS:
-        stats, channel_id, username = client.loop.run_until_complete(fetch_stats(channel_link))
-        process_data(stats, channel_id, username)
+    # for channel_link in constants.PROUKRAINIAN_CHANNELS:
+    stats, channel_id, username = client.loop.run_until_complete(fetch_stats('https://t.me/stremPunisher'))
+    process_data(stats, channel_id, username)
