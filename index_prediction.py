@@ -20,24 +20,33 @@ def get_sentence_embeding(sentences):
 def predict(sentenses):
     values = get_sentence_embeding(sentenses)
     predicted_values = model(values)
-    return float(sum(predicted_values)/len(sentenses)*2-1)
+    coef = float(sum(predicted_values)/len(sentenses)*2-1)
+    return max(min(coef,1),-1)
 
 
-def get_indexes():
-    channel_link = 'https://t.me/stremPunisher'
-    data, channel_id, username = tg_fetch_posts.get_posts(channel_link)
+
+def get_indexes(channel_link, total_count_limit=500):
+    data, channel_id, username = tg_fetch_posts.get_posts(channel_link,total_count_limit)
     last_publication_date = data[-1].get('date')
-    coefficient = 0
+    sentences = []
     # create smart coefficient
     for index in range(len(data)):
         text = data_preprocessing.text_to_word_list(data[index].get('message'))
-        coefficient = predict(sentenses=text)
-    data_to_push = {'calculated_coefficient': [coefficient], 'id_channel': [channel_id],
-                     'last_publication_date': [last_publication_date]}
+        if text and len(text) > 20:
+            sentences.append(text)
+    print(len(sentences))
+    print(total_count_limit)
+    if len(sentences) > 400 or total_count_limit > 1500:
+        coefficient = predict(sentenses=sentences)
+        print(coefficient)
+        data_to_push = {'calculated_coefficient': [coefficient], 'id_channel': [channel_id],
+                         'last_publication_date': [last_publication_date]}
 
-    df_stats = pd.DataFrame.from_dict(data_to_push)
-    df_channel = pd.DataFrame.from_dict({'id_channel': [channel_id], 'channel_name': [username]})
-    # db_connection.connect(df_channel, "Channel")
-    # db_connection.connect(df_stats, "ProrussianCoefficient")
+        df_stats = pd.DataFrame.from_dict(data_to_push)
+        df_channel = pd.DataFrame.from_dict({'id_channel': [channel_id], 'channel_name': [username]})
+        db_connection.connect(df_channel, "Channel")
+        db_connection.connect(df_stats, "ProrussianCoefficient")
+    else:
+        get_indexes(channel_link, total_count_limit=total_count_limit + 100)
 
-get_indexes()
+# get_indexes('https://t.me/truexanewsua')

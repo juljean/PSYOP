@@ -33,7 +33,7 @@ username = config.USERNAME
 client = TelegramClient(username, api_id, api_hash)
 
 
-async def fetch_posts(channels_link):
+async def fetch_posts(channels_link,total_count_limit=100):
     await client.start()
     print("Client Created")
     # Ensure you're authorized
@@ -58,7 +58,7 @@ async def fetch_posts(channels_link):
     all_messages = []
     total_messages = 0
     # Limit of posts to fetch
-    total_count_limit = 100
+    # total_count_limit = 100
 
     while True:
         print("Current Offset ID is:", offset_id, "; Total Messages:", total_messages)
@@ -84,7 +84,7 @@ async def fetch_posts(channels_link):
     return all_messages, my_channel.id, my_channel.username
 
 
-def get_posts(channel_link):
+def get_posts(channel_link, total_count_limit=100):
     with client:
-        posts, channel_id, username = client.loop.run_until_complete(fetch_posts(channel_link))
+        posts, channel_id, username = client.loop.run_until_complete(fetch_posts(channel_link,total_count_limit))
         return posts, channel_id, username

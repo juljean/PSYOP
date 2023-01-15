@@ -70,6 +70,7 @@ PROUKRAINIAN_CHANNELS = [
 'https://t.me/RomaTsymbaliuk',
 'https://t.me/stremPunisher',
 'https://t.me/ukrinformator'
+'https://t.me/truexanewsua'
 ]
 
 PRORUSSIAN_CHANNELS_IDS = ['1064580781.json', '1098940270.json', '1123577413.json', '1145675390.json', '1227152968.json', '1236564472.json', '1324160349.json', '1450141660.json', '1452906568.json', '1453804949.json', '1478765631.json', '1739446698.json', '1783083983.json']
