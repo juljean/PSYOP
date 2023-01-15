@@ -7,7 +7,6 @@ import tg_fetch_posts
 import data_preprocessing
 import pandas as pd
 import db_connection
-import tg_fetch_stats
 
 model = models.load_model(constants.MODEL_NAME)
 
