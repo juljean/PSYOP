@@ -78,3 +78,12 @@ STOP_WORDS_RU = ["c","а","алло","без","белый","близко","бо�
 
 MODEL_LINK = "https://tfhub.dev/google/universal-sentence-encoder-multilingual/3"
 MODEL_NAME = "models/model_all_values.h5"
+
+
+QUERY_SELECT_QUEUE_ENTITIES= """
+SELECT * FROM analysisqueue
+"""
+
+QUERY_DELETE_QUEUE_ENTITIES= """
+DELETE FROM analysisqueue WHERE channel_link = %s;
+"""

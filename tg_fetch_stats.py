@@ -117,7 +117,7 @@ def process_data(json_stats, channel_id, username):
                     reactions_total_count[key_emoticon] = emoticon_count
     stats_to_push = {'id_channel': [channel_id], 'views_total_count': [views_total_count], 'forwards_total_count': [forwards_total_count], 'reactions_total_count': [json.dumps(reactions_total_count)], 'last_publication_date': [last_publication_date]}
     df_stats = pd.DataFrame.from_dict(stats_to_push)
-    db_connection.connect(df_stats, "ChannelStatistics")
+    db_connection.connect(df_stats, "ChannelStatistics", operation_name="insert")
 
 
 def insert_stats(channel_link):

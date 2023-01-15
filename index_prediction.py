@@ -45,10 +45,11 @@ def get_indexes(channel_link, total_count_limit=500):
 
         df_stats = pd.DataFrame.from_dict(data_to_push)
         df_channel = pd.DataFrame.from_dict({'id_channel': [channel_id], 'channel_name': [username]})
-        db_connection.connect(df_channel, "Channel")
-        db_connection.connect(df_stats, "ProrussianCoefficient")
+        db_connection.connect(df_channel, "Channel", operation_name="insert")
+        db_connection.connect(df_stats, "ProrussianCoefficient", operation_name="insert")
         tg_fetch_stats.insert_stats(channel_link)
     else:
-        get_indexes(channel_link, total_count_limit=total_count_limit + 100)
+        get_indexes(channel_link, total_count_limit=total_count_limit + 500)
 
-get_indexes('https://t.me/truexanewsua')
+for channel_link in ['https://t.me/strelkovii']:
+    get_indexes(channel_link)

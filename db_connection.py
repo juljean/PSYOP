@@ -1,7 +1,14 @@
 import psycopg2
 import config
+import logging
 import constants
 import psycopg2.extras as extras
+from psycopg2.extras import LoggingConnection
+
+# setting debug  to True
+logging.basicConfig(level=logging.DEBUG)
+#referencing  the logger information
+logger = logging.getLogger("loggerinformation")
 
 
 def execute_values(conn, df, table):
@@ -30,7 +37,31 @@ def execute_values(conn, df, table):
     cursor.close()
 
 
-def connect(df, table_name):
+def select_operation(conn):
+    cur = conn.cursor()
+    result_dict = {}
+    cur.execute(constants.QUERY_SELECT_QUEUE_ENTITIES)
+    row = cur.fetchone()
+    while row is not None:
+        result_dict[row[0]] = row[1]
+        row = cur.fetchone()
+    conn.commit()
+    # close the communication with the PostgreSQL
+    cur.close()
+    conn.close()
+    return result_dict
+
+
+def delete_operation(conn, channel_link):
+    cur = conn.cursor()
+    cur.execute(constants.QUERY_DELETE_QUEUE_ENTITIES, (channel_link,))
+    conn.commit()
+    # close the communication with the PostgreSQL
+    cur.close()
+    conn.close()
+
+
+def connect(df=None, table_name=None, operation_name="insert", channel_link=None):
     conn = None
     try:
         # connect to the PostgreSQL server
@@ -39,14 +70,21 @@ def connect(df, table_name):
             host="localhost",
             database="PSYOPanalyzer",
             user="postgres",
-            password=config.DB_PASSWORD)
+            password=config.DB_PASSWORD,
+            connection_factory=LoggingConnection)
+
+        # intializing the logging of the PostgreSQL database inserted data
+        conn.initialize(logger)
 
         # create a cursor
         cur = conn.cursor()
-        execute_values(conn, df, table_name)
-        conn.commit()
-        # close the communication with the PostgreSQL
-        cur.close()
+        if operation_name == "insert":
+            execute_values(conn, df, table_name)
+        if operation_name == "select":
+            result_dict = select_operation(conn)
+            return result_dict
+        if operation_name == "delete":
+            delete_operation(conn, channel_link)
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
     finally:
