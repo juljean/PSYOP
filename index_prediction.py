@@ -26,18 +26,18 @@ def predict(sentenses):
 
 
 
-def get_indexes(channel_link, total_count_limit=500):
+def get_indexes(channel_link, total_count_limit=300):
     data, channel_id, username = tg_fetch_posts.get_posts(channel_link,total_count_limit)
     last_publication_date = data[-1].get('date')
     sentences = []
     # create smart coefficient
     for index in range(len(data)):
-        text = data_preprocessing.text_to_word_list(data[index].get('message'))
-        if text and len(text) > 20:
-            sentences.append(text)
+        text = data_preprocessing.text_to_word_for_model(data[index].get('message'))
+        if text:
+            sentences.extend(text)
     print(len(sentences))
     print(total_count_limit)
-    if len(sentences) > 400 or total_count_limit > 1500:
+    if len(sentences) > 600 or total_count_limit > 1500:
         coefficient = predict(sentenses=sentences)
         print(coefficient)
         data_to_push = {'calculated_coefficient': [coefficient], 'id_channel': [channel_id],
@@ -51,5 +51,6 @@ def get_indexes(channel_link, total_count_limit=500):
     else:
         get_indexes(channel_link, total_count_limit=total_count_limit + 500)
 
-for channel_link in ['https://t.me/strelkovii']:
-    get_indexes(channel_link)
+for link in constants.VAGUE_CHANNELS:
+    get_indexes(link)
+    print(link)
